@@ -1,0 +1,55 @@
+[% USE raw %]
+[% USE Asset %]
+[% USE KohaDates %]
+[% SET footerjs = 1 %]
+[% INCLUDE 'doc-head-open.inc' %]
+<style>
+</style>
+<title>Koha: [% MSG.module_name | html %]: [% MSG.statuses_title | html %]</title>
+[% INCLUDE 'doc-head-close.inc' %]
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">[% MSG.home | html %]</a> &rsaquo; <a href="/cgi-bin/koha/tools/tools-home.pl">[% MSG.tools_home | html %]</a> &rsaquo;  [% MSG.statuses_title | html %]</div>
+
+<div class="main container-fluid">
+  <div class="row">
+    <div class="col-sm-10 col-sm-push-2">
+      <table id="libris-deletes-status-table">
+        <tr>
+          <th>[% MSG.timestamp_table_heading %]</th>
+          <th>[% MSG.koha_record_table_heading %]</th>
+          <th>[% MSG.libris_record_table_heading %]</th>
+          <th>[% MSG.libris_holding_table_heading %]</th>
+          <th>[% MSG.status_table_heading %]</th>
+          <th>[% MSG.retries_table_heading %]</th>
+        </tr>
+        [% FOREACH status IN statuses %]
+        <tr>
+          <td>[% status.timestamp | html %]</td>
+          <td>
+            [% IF biblionumber %]
+            <a href="[% status.biblionumber_link | html %]">[% status.biblionumber_link_text | html %]</a>
+            [% ELSE %]
+            <a href="[% status.record_id_bib_link %]">Search for "[% status.record_id_bib %]"</a>
+            [% END %]
+          </td>
+          <td><a href="[% status.record_id | html %]">[% status.record_id | html %]</a></td>
+          <td><a href="[% status.holding_id | html %]">[% status.holding_id | html %]</a></td>
+          <td>[% status.status | html %]</td>
+          <td>[% status.retries | html %]</td>
+        </tr>
+        [% END %]
+        <tr>
+        </tr>
+      </table>
+    </div>
+    <div class="col-sm-2 col-sm-pull-10">
+      <aside>
+        [% INCLUDE 'tools-menu.inc' %]
+      </aside>
+    </div> <!-- /.col-sm-2.col-sm-pull-10 -->
+  </div>
+</div>
+[% INCLUDE 'intranet-bottom.inc' %]
+

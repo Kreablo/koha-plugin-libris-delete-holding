@@ -1,0 +1,39 @@
+add_branch_mapping: Add branch mapping
+add_libris_credentials: Add Libris Credentials
+biblionumber_link_text: Koha record %%
+branch_mapping_config: Branch mappings
+branch_mapping_credentials_label: Libris Credentials
+branchcode_label: Branchcode
+client_id_label: Client ID
+client_secret_label: Client secret
+configuration: Configuration
+configure: Configure Libris Holding Deletion plugin
+config_mode_label: Mode
+errors: Errors
+koha_record_table_heading: Koha record
+libris_credentials: Libris Credentials
+libris_credentials_null: "-"
+libris_credentials_name_label: Descriptive name
+libris_holding_table_heading: Libris holding
+libris_record_table_heading: Libris record
+misc_config: Configuration parameters
+plugins: Plugins
+production_mode_label: Production mode
+module_name: Libris Holding Deletion
+remove: Remove
+save_configuration: Save configuration
+sigel_label: Libris Sigel
+status_done: Done
+status_pending: Pending
+status_table_heading: Status
+status_unknown: Unknown
+stg_mode_label: Staging mode
+retries_table_heading: Delete attempts
+timestamp_table_heading: Time updated
+tools_home: Tools
+warnings: Warnings
+remove_branch_mapping: Remove
+remove_libris_credentials: Remove
+save_success: Successfully saved configuration
+statuses_title: Status of pending deletes
+qa_mode_label: QA mode

@@ -1,0 +1,187 @@
+[% USE raw %]
+[% USE Asset %]
+[% USE KohaDates %]
+[% SET footerjs = 1 %]
+[% INCLUDE 'doc-head-open.inc' %]
+<style>
+  button.save-button {
+     font-size: larger;
+  }
+  .form-input {
+     margin-top: 10px;
+     margin-bottom: 10px;
+  }
+  .form-input th {
+     text-align: left;
+     max-width: 10em;
+  }
+  .receive-url {
+    font-size: smaller;
+    border-radius: 4px;
+    padding: 1em;
+    margin: 1em;
+    border: 2px solid green;
+  }
+</style>
+<title>Koha: [% MSG.module_name | html %]: [% MSG.configuration | html %]</title>
+[% INCLUDE 'doc-head-close.inc' %]
+[% PERL %]
+use Data::Dumper;
+$stash->set('hkey' => sub { return $_[0]->{$_[1]} });
+$stash->set('dump' => sub { return Dumper($_[0]) });
+$stash->set('defined' => sub { return defined $_[0]; });
+[% END %]
+[% BLOCK select %]
+<select type="select-one" name="[% name %]"[% IF defined(id) && id != '' %] id="[% id %]"[% END %][% IF defined(class) %] class="form-control[% IF defined(class) && class != '' %] [% class %][% END %]"[% END %][% IF required %]required[% END %]>
+  [% IF emptyval %]
+  <option value="" [% IF empty(value) %]selected="selected"[% END %]>[% IF defined(emptylabel) %][% emptylabel | html %][% ELSE %][% emptyval | html %][% END %]</option>
+  [% END %]
+  [% FOREACH item IN list %]
+  <option value="[% hkey(item, valuekey) | html %]" [% IF value == hkey(item, valuekey) %]selected="selected"[% END %]>[% hkey(item, labelkey) | html %]</option>
+  [% END %]
+</select>
+[% END %]
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">[% MSG.home | html %]</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">[% MSG.plugins | html %]</a> &rsaquo;  [% MSG.module_name | html %] &rsaquo; [% MSG.configuration | html %]</div>
+
+<div class="main container-fluid">
+  <div class="row">
+    <div class="col-sm-10 col-sm-push-2">
+      <main class="page-section">
+        <div class="row">
+          <form method="POST">
+            <div class="col-xs-12 col-sm-6 form-group">
+              <h3>[% MSG.misc_config | html %]</h3>
+              <input type="hidden" name="class" value="[% CLASS %]">
+              <input type="hidden" name="method" value="[% METHOD %]">
+              <input type="hidden" name="save" value="1">
+              <input type="hidden" name="token" value="[% token %]">
+              <dl class="form-input">
+                <dt><label for="mode">[% MSG.config_mode_label | html %]</label></dt>
+                <dd>
+                  [% PROCESS select list=libris_delete_holding_modes name="libris_delete_holding_mode" id="libris_delete_holding_mode" emptyval="0" valuekey="mode" labelkey="label" value=libris_delete_holding_mode %]
+                </dd>
+              </dl>
+              <h3>[% MSG.libris_credentials %]</h3>
+              <div id="libris-credentials-container">
+                [% FOREACH c IN credentials %]
+                <hr>
+                <div class="pull-right"><button class="remove-credentials btn-danger"><span class="fa fa-close"></span> [% MSG.remove_libris_credentials | html %]</button></div>
+                <dl class="form-input">
+                  [% SET id0 = "credentials-name-" _ loop.index() %]
+                  <dt><label for="[% id0 %]">[% MSG.libris_credentials_name_label %]</label></dt>
+                  <dd><input id="[% id0 %]" type="text" name="[% id0 %]" value="[% c.apiconf_name | html %]" class="form-control credentials-name" required /></dd>
+                  [% SET id0 = "credentials-client-id-" _ loop.index() %]
+                  <dt><label for="[% id0 %]">[% MSG.client_id_label %]</label></dt>
+                  <dd><input type="text" name="[% id0 %]" value="[% c.client_id | html %]" class="form-control credentials-client-id" required /></dd>
+                  [% SET id0 = "credentials-client-secret-" _ loop.index() %]
+                  <dt><label for="[% id0 %]">[% MSG.client_secret_label %]</label></dt>
+                  <dd><input type="text" name="[% id0 %]" value="[% c.client_secret | html %]" class="form-control credentials-client-secret" required /></dd>
+                </dl>
+                <hr>
+                [% END %]
+              </div>
+              <button id="add-credentials" class="btn-success btn-lg"><span class="fa fa-plus"></span> [% MSG.add_libris_credentials | html %]</button>
+            </div>
+            <div  class="col-xs-12 col-sm-6 form-group">
+              <div id="branch-mappings-container">
+                <h3>[% MSG.branch_mapping_config | html %]</h3>
+                [% FOREACH mapping IN branch_mappings %]
+                <hr>
+                <div class="pull-right"><button class="remove-branch-mapping btn-danger"><span class="fa fa-close"></span> [% MSG.remove_branch_mapping | html %]</button></div>
+                <dl class="form-input">
+                  [% SET id0 = "branch-mapping-branchcode-" _ loop.index() %]
+                  <dt><label for="[% id0 %]">[% MSG.branchcode_label %]</label></dt>
+                  <dd>[% PROCESS select id=id0 list=branches name=id0 emptyval=0 value=mapping.branchcode valuekey="branchcode" labelkey="branchname" required=1 %]</dd>
+                  [% SET id0 = "branch-mapping-sigel-" _ loop.index() %]
+                  <dt><label for="[% id0 %]">[% MSG.sigel_label %]</label></dt>
+                  <dd><input type="text" name="[% id0 %]" value="[% mapping.sigel | html %]" class="form-control" required /></dd>
+                  [% SET id0 = "branch-mapping-credentials-" _ loop.index() %]
+                  <dt><label for="[% id0 %]">[% MSG.branch_mapping_credentials_label %]</label></dt>
+                  <dd>[% PROCESS select id=id0 list=credentials name=id0 emptyval=1 emptylabel=MSG.libris_credentials_null value=mapping.apiconf_name valuekey="apiconf_name" labelkey="apiconf_name" class="libris-credentials" required=1 %]</dd>
+                </dl>
+                <hr>
+               [% END %]
+              </div>
+              <button id="add-branch-mapping" class="btn-success btn-lg"><span class="fa fa-plus"></span> [% MSG.add_branch_mapping | html %]</button>
+            </div>
+          </div>
+          <div class="row">
+            <div  class="form-group col-xs-12">
+              [% IF errors %]
+              <hr>
+              <div class="bg-danger text-danger dialog">
+                <h4>[% MSG.errors | html  %]</h4>
+                <ul>
+                  [% FOREACH error IN errors %]
+                  <li><span class="error">[% error | html %]</span></li>
+                  [% END %]
+                </ul>
+              </div>
+              [% END %]
+              [% IF save_success %]
+              <p id="save-success" class="text-success">[% MSG.save_success | html %]</p>
+              [% END %]
+              <hr>
+              <button type="submit" value="save" class="btn-primary save-button btn-lg" ><span class="fa fa-save"></span> [% MSG.save_configuration | html %]</button>
+            </div>
+          </form>
+        </div>
+
+        <div style="display: none">
+          <form>
+            <div id="branch-mapping-input-template" class="form-group">
+              <hr>
+              <div class="pull-right"><button class="remove-branch-mapping btn-danger"><span class="fa fa-close"></span> [% MSG.remove_branch_mapping | html %]</button></div>
+              <dl class="form-input">
+                [% SET id0 = "branch-mapping-branchcode-" %]
+                <dt><label for="branch-mapping-branchcode-">[% MSG.branchcode_label %]</label></dt>
+                <dd>
+                  <select name="[% id0 %]" class="form-control" required>
+                    [% FOREACH branch IN branches %]
+                       <option value="[% branch.branchcode | html %]">[% branch.branchname | html %]</option>
+                    [% END %]
+                  </select>
+                [% SET id0 = "branch-mapping-sigel-" %]
+                <dt><label for="[% id0 %]">[% MSG.sigel_label %]</label></dt>
+                <dd><input type="text" name="[% id0 %]" value="[% mapping.sigel | html %]" class="form-control" required /></dd>
+                [% SET id0 = "branch-mapping-credentials-" %]
+                <dt><label for="[% id0 %]">[% MSG.branch_mapping_credentials_label %]</label></dt>
+                <dd>[% PROCESS select id=id0 list=libris_credentials name=id0 emptyval=1 emptylabel=MSG.libris_credentials_null value=mapping.libris_credentials valuekey="client_id" labelkey="name" class="libris-credentials" required=1 %]</dd>
+              </dl>
+              <hr>
+            </div>
+            <div id="credentials-input-template" class="form-group">
+                <hr>
+                <div class="pull-right"><button class="remove-credentials btn-danger"><span class="fa fa-close"></span> [% MSG.remove_libris_credentials | html %]</button></div>
+                <dl class="form-input">
+                  [% SET id0 = "credentials-name-" %]
+                  <dt><label for="[% id0 %]">[% MSG.libris_credentials_name_label %]</label></dt>
+                  <dd><input type="text" id="[% id0 %]" name="[% id0 %]" value="[% c.name | html %]" class="form-control credentials-name" required /></dd>
+                  [% SET id0 = "credentials-client-id-" %]
+                  <dt><label for="[% id0 %]">[% MSG.client_id_label %]</label></dt>
+                  <dd><input type="text" name="[% id0 %]" value="[% c.client_id | html %]" class="form-control credentials-client-id" required /></dd>
+                  [% SET id0 = "credentials-client-secret-" %]
+                  <dt><label for="[% id0 %]">[% MSG.client_secret_label %]</label></dt>
+                  <dd><input type="text" name="[% id0 %]" value="[% c.client_secret | html %]" class="form-control credentials-client-secret" required /></dd>
+                </dl>
+                <hr>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+    <div class="col-sm-2 col-sm-pull-10">
+      <aside>
+        [% INCLUDE 'tools-menu.inc' %]
+      </aside>
+    </div> <!-- /.col-sm-2.col-sm-pull-10 -->
+  </div>
+</div>
+<script>
+[% INCLUDE "$config_js" %]
+</script>
+[% INCLUDE 'intranet-bottom.inc' %]

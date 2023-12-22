@@ -1,0 +1,11 @@
+Makefile.PL
+MANIFEST			This list of files
+src/Koha/Plugin/LibrisDeleteHolding.pm
+src/Koha/Plugin/LibrisDeleteHolding/API.pm
+src/Koha/Plugin/LibrisDeleteHolding/ApiConf.pm
+src/Koha/Plugin/LibrisDeleteHolding/Control.pm
+src/Koha/Plugin/LibrisDeleteHolding/configure.tt
+src/Koha/Plugin/LibrisDeleteHolding/tool.tt
+src/Koha/Plugin/LibrisDeleteHolding/config.js
+src/Koha/Plugin/LibrisDeleteHolding/i18n/default.yml
+src/Koha/Plugin/LibrisDeleteHolding/i18n/sv-SE.yml

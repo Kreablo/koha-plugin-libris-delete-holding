@@ -1,0 +1,9 @@
+configuration: Konfiguration
+configure: Konfigurera plugin för raderig av Libris-bestånd
+config_mode_label: Läge
+errors: Fel
+plugins: Pluginer
+remove: Ta bort
+save_configuration: Spara konfiguration
+warnings: Warnings
+save_success: Successfully saved configuration
