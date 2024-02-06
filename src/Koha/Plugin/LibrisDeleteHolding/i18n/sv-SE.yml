@@ -1,9 +1,44 @@
+add_branch_mapping: Lägg till biblioiteksmappning
+add_libris_credentials: Lägg till Libris API-nyckel
+biblionumber_link_text: Bibliografisk post %%
+branch_mapping_config: Biblioteksmappningar
+branch_mapping_credentials_label: Libris API-nyckel
+branchcode_label: Bibliotekskod
+client_id_label: Klient-ID
+client_secret_label: Klient-hemlighet
 configuration: Konfiguration
-configure: Konfigurera plugin för raderig av Libris-bestånd
+configure: Konfigurera plugin för gallring av Libris-bestånd
 config_mode_label: Läge
+current_deletions_title: Aktuella gallringar
+current_deletions_heading: Aktuella gallringar av Librisbestånd
 errors: Fel
+koha_record_table_heading: Bibliografisk post i Koha
+libris_credentials: Libris API-nyckel
+libris_credentials_null: "-"
+libris_credentials_name_label: Beskrivande namn
+libris_holding_table_heading: Libris XL-bestånd
+libris_record_table_heading: Libris XL-post
+misc_config: Konfigurationsparametrar
 plugins: Pluginer
+production_mode_label: Produktionsläge
+module_name: Libris beståndgallring
 remove: Ta bort
 save_configuration: Spara konfiguration
+sigel_label: Sigel
+sigel_table_heading: Sigel
+status_cancelled: Avbruten
+status_done: Klar
+status_failed: Misslyckad
+status_pending: Väntar
+status_table_heading: Status
+status_unknown: Okänd
+stg_mode_label: Staging-läge
+retries_table_heading: Gallringsförsök
+timestamp_table_heading: Senast uppdaterad
+tools_home: Verktyg
 warnings: Warnings
-save_success: Successfully saved configuration
+remove_branch_mapping: Ta bort
+remove_libris_credentials: Ta bort
+save_success: Sparade konfiguration
+statuses_title: Status på aktuella gallringar
+qa_mode_label: QA-läge

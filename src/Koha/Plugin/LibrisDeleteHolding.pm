@@ -1,8 +1,9 @@
-package Koha::Plugin::LibrisDeleteItems;
+package Koha::Plugin::LibrisDeleteHolding;
 
 use parent qw(Koha::Plugins::Base);
-use Koha::Plugin::LibrisDeleteItems::API qw(LIBRIS_PROD_MODE LIBRIS_QA_MODE LIBRIS_STG_MODE);
-use Koha::Plugin::LibrisDeleteItems::ApiConf qw(all_branch_mappings all_apiconfs save_api_conf );
+use Koha::Plugin::LibrisDeleteHolding::API qw(LIBRIS_PROD_MODE LIBRIS_QA_MODE LIBRIS_STG_MODE);
+use Koha::Plugin::LibrisDeleteHolding::ApiConf qw(all_branch_mappings all_apiconfs save_api_conf );
+use Koha::Plugin::LibrisDeleteHolding::Control qw( all_statuses_formatted process_item delete_items );
 
 require Koha::Logger;
 require Koha::Libraries;
@@ -14,17 +15,17 @@ require YAML::XS;
 use strict;
 use warnings;
 
-our $VERSION = "0.1";
+our $VERSION = "0.2";
 
 our $metadata = {
-    name            => 'Libris Delete Items Module',
+    name            => 'Libris Delete Holding Module',
     author          => 'Andreas Jonsson',
     date_authored   => '2023-12-15',
     date_updated    => "2023-12-15",
     minimum_version => 22.11,
     maximum_version => '',
     version         => $VERSION,
-    description     => 'Automatic deletion of items in Libris XL when deleted in Koha.'
+    description     => 'Automatic deletion of library holding in Libris XL when deleted in Koha.'
 };
 
 sub new {
@@ -35,6 +36,8 @@ sub new {
 
     my $self = $class->SUPER::new($args);
     $self->{'class'} = $class;
+
+    $self->{'logger'} = Koha::Logger->get;
 
     return $self;
 }
@@ -83,13 +86,14 @@ EOF
    sigel VARCHAR(10) NOT NULL,
    record_id VARCHAR(64) NOT NULL,
    record_id_bib VARCHAR(32) NOT NULL,
-   biblionumber INT NOT NULL,
+   biblionumber INT,
    holding_id VARCHAR(64) NOT NULL,
-   status ENUM('pending', 'done') NOT NULL,
+   status ENUM('pending', 'done', 'cancelled', 'failed') NOT NULL,
    retries INT NOT NULL DEFAULT 0,
    timestamp TIMESTAMP NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
    INDEX (sigel),
-   INDEX (marc001),
+   INDEX (record_id),
+   INDEX (record_id_bib),
    INDEX (biblionumber),
    CONSTRAINT `${statustable}_fk1` FOREIGN KEY (sigel) REFERENCES `$sigeltable` (sigel) ON UPDATE CASCADE ON DELETE CASCADE,
    CONSTRAINT `${statustable}_fk2` FOREIGN KEY (biblionumber) REFERENCES biblio (biblionumber) ON UPDATE CASCADE ON DELETE SET NULL
@@ -151,7 +155,7 @@ sub configure {
         # in this package and in the parent package.  We clean this up
         # when we configure the plugin.
 
-        if (! grep {$_ eq $method->plugin_method} ('configure', 'install', 'uninstall', 'upgrade', 'enable', 'disable', 'tool', 'after_item_action')) {
+        if (! grep {$_ eq $method->plugin_method} ('configure', 'install', 'uninstall', 'upgrade', 'enable', 'disable', 'tool', 'after_item_action', 'cronjob_nightly')) {
             $method->delete;
         }
     }
@@ -177,9 +181,8 @@ sub configure {
 
         if ($@) {
             my $msg = "Failed to save configuration: " . $@;
-            my $logger = Koha::Logger->get;
 
-            $logger->error($msg);
+            $self->{'logger'}->error($msg);
 
             push @errors, $msg;
         } else {
@@ -261,9 +264,24 @@ sub _load_messages {
 
 
 sub after_item_action {
-    my ($self, $action, $item, $item_id) = @_;
+    my ($self, $params) = @_;
 
+    my $action = $params->{action};
+    my $item = $params->{item};
+    my $item_id = $params->{item_id};
 
+    $self->{logger}->debug('after_item_action action: "' . $action . '"');
+    if ($action eq 'delete') {
+        process_item($self, $item);
+    }
+}
+
+sub cronjob_nightly {
+    my $self = shift;
+
+    $self->{logger}->debug('plugin_nightly');
+
+    delete_items($self);
 }
 
 sub tool {
@@ -281,6 +299,7 @@ sub tool {
         statuses => $statuses
         );
 
+    $self->output_html( $template->output() );
 }
 
 return 1;

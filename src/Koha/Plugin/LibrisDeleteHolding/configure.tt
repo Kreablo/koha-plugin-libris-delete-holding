@@ -150,7 +150,7 @@ $stash->set('defined' => sub { return defined $_[0]; });
                 <dd><input type="text" name="[% id0 %]" value="[% mapping.sigel | html %]" class="form-control" required /></dd>
                 [% SET id0 = "branch-mapping-credentials-" %]
                 <dt><label for="[% id0 %]">[% MSG.branch_mapping_credentials_label %]</label></dt>
-                <dd>[% PROCESS select id=id0 list=libris_credentials name=id0 emptyval=1 emptylabel=MSG.libris_credentials_null value=mapping.libris_credentials valuekey="client_id" labelkey="name" class="libris-credentials" required=1 %]</dd>
+                <dd>[% PROCESS select id=id0 list=credentials name=id0 emptyval=1 emptylabel=MSG.libris_credentials_null value="" valuekey="apiconf_name" labelkey="apiconf_name" class="libris-credentials" required=1 %]</dd>
               </dl>
               <hr>
             </div>

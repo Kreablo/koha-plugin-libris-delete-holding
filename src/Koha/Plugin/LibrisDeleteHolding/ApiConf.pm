@@ -44,20 +44,27 @@ sub branch_mappings {
     my $mappings = all_branch_mappings($plugin);
 
     my %api_confs = ();
-    my %branch_mappings = ();
+    my %branch_mappings_per_branchcode = ();
+    my %branch_mappings_per_sigel = ();
 
     for my $conf (@$confs) {
         $api_confs{$conf->{apiconf_name}} = $conf;
     }
 
     for my $mapping (@$mappings) {
-        $branch_mappings{$mapping->{branchcode}} = {
+        $branch_mappings_per_branchcode{$mapping->{branchcode}} = {
             sigel => $mapping->{sigel},
+            api_conf => $api_confs{$mapping->{apiconf_name}}
+        };
+        $branch_mappings_per_sigel{$mapping->{sigel}} = {
             api_conf => $api_confs{$mapping->{apiconf_name}}
         };
     }
 
-    return \%branch_mappings;
+    return {
+        per_branchcode => \%branch_mappings_per_branchcode,
+        per_sigel => \%branch_mappings_per_sigel
+    };
 }
 
 sub save_api_conf {

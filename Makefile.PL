@@ -2,8 +2,8 @@ use ExtUtils::MakeMaker;
 
 
 WriteMakefile(
-    NAME            => 'Koha::Plugin::LibrisDeleteItems',
-    VERSION_FROM    => 'src/Koha/Plugin/LibrisDeleteItems.pm',
+    NAME            => 'Koha::Plugin::LibrisDeleteHolding',
+    VERSION_FROM    => 'src/Koha/Plugin/LibrisDeleteHolding.pm',
     NO_MYMETA       => 1
 );
 

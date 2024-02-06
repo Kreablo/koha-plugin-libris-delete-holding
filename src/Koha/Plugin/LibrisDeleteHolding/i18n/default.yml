@@ -9,6 +9,8 @@ client_secret_label: Client secret
 configuration: Configuration
 configure: Configure Libris Holding Deletion plugin
 config_mode_label: Mode
+current_deletions_title: Current deletions
+current_deletions_heading: Current deletions of Libris holdings
 errors: Errors
 koha_record_table_heading: Koha record
 libris_credentials: Libris Credentials
@@ -23,7 +25,10 @@ module_name: Libris Holding Deletion
 remove: Remove
 save_configuration: Save configuration
 sigel_label: Libris Sigel
+sigel_table_heading: Sigel
+status_cancelled: Cancelled
 status_done: Done
+status_failed: Failed
 status_pending: Pending
 status_table_heading: Status
 status_unknown: Unknown

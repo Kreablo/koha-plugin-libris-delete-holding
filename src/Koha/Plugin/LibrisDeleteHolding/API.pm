@@ -8,18 +8,18 @@ require Exporter;
 require LWP::UserAgent;
 
 use URI::Escape qw( uri_escape_utf8 );
-use Koha::Plugin::LibrisDeleteItems::ApiConf qw( all_branch_mappings all_apiconfs branch_mappings );
+use Koha::Plugin::LibrisDeleteHolding::ApiConf qw( all_apiconfs branch_mappings );
 
 use strict;
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(LIBRIS_PROD_MODE LIBRIS_QA_MODE LIBRIS_STG_MODE);
+our @EXPORT_OK = qw(LIBRIS_PROD_MODE LIBRIS_QA_MODE LIBRIS_STG_MODE  get_api );
 
 use constant {
     QA_URL    => 'https://libris-qa.kb.se',
     STG_URL   => 'https://libris-stg.kb.se',
     PROD_URL  => 'https://libris.kb.se',
-    OAUTH_QA_URL => 'https://login-qa.libris.kb.se',
+    OAUTH_QA_URL => 'https://login-stg.libris.kb.se',  # login-stg is used also for QA
     OAUTH_STG_URL => 'https://login-stg.libris.kb.se',
     OAUTH_PROD_URL => 'https://login.libris.kb.se',
 };
@@ -35,7 +35,7 @@ sub get_api {
 
     return $plugin->{_api} if exists $plugin->{_api};
 
-    $plugin->{_api} = new Koha::Plugin::LibrisDeleteItems::API({
+    $plugin->{_api} = new Koha::Plugin::LibrisDeleteHolding::API({
         mode => $plugin->retrieve_data('mode'),
         mappings => branch_mappings($plugin)
     });
@@ -124,16 +124,15 @@ sub _get_bearer {
     die "Failed to get bearer token, " . $response->code . ".";
 }
 
-sub _initate_privileged {
-    my ($self, $request, $branchcode) = @_;
+sub _initiate_privileged {
+    my ($self, $request, $sigel) = @_;
 
-    my $m = $self->{mappings};
+    my $m = $self->{mappings}->{per_sigel};
 
-    die "No mapping available for $branchcode." unless exists $m->{$branchcode};
+    die "No mapping available for $sigel." unless exists $m->{$sigel};
 
-    my $mapping = $m->{$branchcode};
+    my $mapping = $m->{$sigel};
     my $c = $mapping->{api_conf};
-    my $sigel = $mapping->{sigel};
     my $client_id = $c->{client_id};
 
     my $cache = Koha::Caches->get_instance('koha_plugin_librisdeleteitems');
@@ -152,12 +151,19 @@ sub _initate_privileged {
     $request->header('XL-Active-Sigel', $sigel);
 }
 
-sub _delete_holding {
-    my ($self, $branchcode, $item_id);
+sub delete_holding {
+    my ($self, $holding_id, $sigel) = @_;
 
-    my $request = new HTTP::Request(DELETE => $self->{api_url} . '/' . $item_id);
+    my $request = new HTTP::Request(DELETE => $holding_id);
+    $self->_initiate_privileged($request, $sigel);
 
-    return $request;
+    my $response = $self->{agent}->request($request);
+
+    if ($response->code eq '200' || $response->code eq '204' || $response->code eq '404' || $response->code eq '410') {
+        return 1;
+    }
+
+    return 0;
 }
 
 sub _get_record {
@@ -170,11 +176,12 @@ sub _get_record {
     my $response = $self->{agent}->request($request);
 
     if ($response->code eq '404') {
-        $request = new HTTP::Request(GET => $self->{api_url} . '/bib/' . $item_id);
+        $request = new HTTP::Request(GET => $self->{api_url} . '/resource/bib/' . $item_id);
         $request->header('Accept' => 'application/json');
 
         $response = $self->{agent}->request($request);
     }
+
 
     if ($response->code eq '200') {
         my $content = $response->content;
@@ -193,7 +200,12 @@ sub find_holding {
 
     my $r = $self->_get_record($record_id);
 
-    my $request = new HTTP::Request(GET => $self->{api_url} . '/_findhold?id=' . $r->{'@id'} . '&library=' . _library_id($sigel));
+    return undef if !defined $r;
+
+    my $url = $self->{api_url} . '/_findhold?id=' . $r->{'@id'} . '&library=' . _library_id($sigel);
+
+    $self->{logger}->debug('URL: ' . $url);
+    my $request = new HTTP::Request(GET => $url);
     $request->header('Accept' => 'application/json');
 
     my $response = $self->{agent}->request($request);
@@ -211,7 +223,7 @@ sub find_holding {
             $self->{logger}->warn("More than one holding for '$sigel' on record '" . $r->{'@id'});
         }
 
-        return $holdings->[0];
+        return ($holdings, $r->{'@id'});
     }
 
     $self->{logger}->info("Failed to find holdings for record id " . $record_id . ": " . $response->code . ' ' . $response->message);
