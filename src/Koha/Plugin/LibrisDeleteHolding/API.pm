@@ -109,8 +109,6 @@ sub _get_bearer {
                                     . '&grant_type=client_credentials');
     $request->header('Accept' => 'application/json');
 
-    warn $self->{oauth_url} . '/oauth/token';
-
     my $response = $self->{agent}->request($request);
 
     if ($response->code eq '200') {

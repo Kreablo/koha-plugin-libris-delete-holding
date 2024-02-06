@@ -85,8 +85,6 @@ sub save_api_conf {
     my $add = sub {
         my ($h, $n, $k, $v) = @_;
 
-        warn "Add h '$h' n '$n' k '$k' v '$v'";
-
         if (!exists $h->{$n}) {
             $h->{$n} = {};
         }
