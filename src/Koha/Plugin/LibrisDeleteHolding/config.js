@@ -13,7 +13,7 @@
 
     var greatestid = function greatestid (containerid, prefix) {
         var max = 0;
-        $('#' + containerid + ' input').each(function (index, element) {
+        $('#' + containerid + ' input, ' + '#' + containerid + ' select').each(function (index, element) {
             var re = new RegExp(prefix + '(\\d+)');
             var matches = element.id.match(re);
             if (matches) {
