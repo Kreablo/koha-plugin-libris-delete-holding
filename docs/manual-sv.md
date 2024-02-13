@@ -38,7 +38,7 @@ vid varje uppdatering av datat i testmiljön.
 
 ## Fördröjning innan raderingen av bestånd verkställs.
 
-Den faktiska raderingen av bestånd genomförs varje morgon (normalt ca 6:30 om cronjobbet plugins\_nightly är schemalagt under cron.daily). Libris bygger om sökindexet varje natt. Därför kan man förvänta sig en fördröjning på två dagar innan beståndet försvinner från sökresultatet i Libris. Om man har möjlighet att tidigarelägga plugins\_nightly till på kvällen innan Libris bygger om sitt sökinde kan man få beståndet att försvinna från sökresultatet i Libris redan nästa dag.
+Den faktiska raderingen av bestånd genomförs varje morgon (normalt ca 6:30 om cronjobbet plugins\_nightly är schemalagt under cron.daily). Libris bygger om sökindexet varje natt. Därför kan man förvänta sig en fördröjning på två dagar innan beståndet försvinner från sökresultatet i Libris. Om man har möjlighet att tidigarelägga plugins\_nightly till på kvällen innan Libris bygger om sitt sökindex kan man få beståndet att försvinna från sökresultatet i Libris redan nästa dag.
 
 # Testscenarion
 
@@ -55,9 +55,9 @@ Förväntning:
 
 Om det inte finns någon beståndspost för den givna sigeln och den aktuella bibliografiska posten läggs inget in i tabellen.  Därför, kontrollera om det finns någon beståndspost med URL:en:
 
-https://libris-qa.kb.se/_findhold?id=https://libris-qa.kb.se/<libris xl postidentitet>&library=https://libris.kb.se/library/<sigel>
+https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/&lt;_libris xl postidentitet_&gt;&library=https://libris.kb.se/library/&lt;_sigel_&gt;
 
-där <libris xl postidentitet> och <sigel> skall bytas ut.
+där &lt;_libris xl postidentitet_&gt; och &lt;_sigel_&gt; skall bytas ut.
 
 ## SCENARIO 2 POSTRADERING
 
@@ -71,9 +71,9 @@ Förväntning:
 
 Om det inte finns någon beståndspost för den givna sigeln och den aktuella bibliografiska posten läggs inget in i tabellen.  Därför, kontrollera om det finns någon beståndspost med URL:en:
 
-https://libris-qa.kb.se/_findhold?id=https://libris-qa.kb.se/<libris xl postidentitet>&library=https://libris.kb.se/library/<sigel>
+https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/&lt;_libris xl postidentitet_&gt;&library=https://libris.kb.se/library/&lt;_sigel_&gt;
 
-där <libris xl postidentitet> och <sigel> skall bytas ut.
+där &lt;_libris xl postidentitet_&gt; och &lt;_sigel_&gt; skall bytas ut.
 
 ## SCENARIO 3 EXEMPLARRADERING, YTTERLIGARE EXEMPLAR
 
@@ -96,9 +96,9 @@ I kolumen "Bibliografisk post i Koha" skall det finnas en länk till en sökning
 
 Om det inte finns någon beståndspost för den givna sigeln och den aktuella bibliografiska posten läggs inget in i tabellen.  Därför, kontrollera om det finns någon beståndspost med URL:en:
 
-https://libris-qa.kb.se/_findhold?id=https://libris-qa.kb.se/<libris xl postidentitet>&library=https://libris.kb.se/library/<sigel>
+https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/&lt;_libris xl postidentitet_&gt;&library=https://libris.kb.se/library/&lt;_sigel_&gt;
 
-där <libris xl postidentitet> och <sigel> skall bytas ut.
+där &lt;_libris xl postidentitet_&gt; och &lt;_sigel_&gt; skall bytas ut.
 
 ## SCENARIO 5 POSTRADERING, ÅNGRA SIG
 
@@ -112,9 +112,9 @@ Förväntning:
 
 Om det inte finns någon beståndspost för den givna sigeln och den aktuella bibliografiska posten läggs inget in i tabellen.  Därför, kontrollera om det finns någon beståndspost med URL:en:
 
-https://libris-qa.kb.se/_findhold?id=https://libris-qa.kb.se/<libris xl postidentitet>&library=https://libris.kb.se/library/<sigel>
+https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/&lt;_libris xl postidentitet_&gt;&library=https://libris.kb.se/library/&lt;_sigel_&gt;
 
-där <libris xl postidentitet> och <sigel> skall bytas ut.
+där &lt;_libris xl postidentitet_&gt; och &lt;_sigel_&gt; skall bytas ut.
 
 ## SCENARIO 6 POSTRADERING SKALL MISSLYCKAS VID ÄNDRING AV LÄGE
 
