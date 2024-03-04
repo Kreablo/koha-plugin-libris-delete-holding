@@ -15,13 +15,13 @@ require YAML::XS;
 use strict;
 use warnings;
 
-our $VERSION = "1.1";
+our $VERSION = "1.2";
 
 our $metadata = {
     name            => 'Libris Delete Holding Module',
     author          => 'Andreas Jonsson',
     date_authored   => '2023-12-15',
-    date_updated    => "2024-02-13",
+    date_updated    => "2024-03-05",
     minimum_version => 22.11,
     maximum_version => '',
     version         => $VERSION,

@@ -52,7 +52,7 @@ sub branch_mappings {
     }
 
     for my $mapping (@$mappings) {
-        $branch_mappings_per_branchcode{$mapping->{branchcode}} = {
+        $branch_mappings_per_branchcode{uc($mapping->{branchcode})} = {
             sigel => $mapping->{sigel},
             api_conf => $api_confs{$mapping->{apiconf_name}}
         };
@@ -65,6 +65,14 @@ sub branch_mappings {
         per_branchcode => \%branch_mappings_per_branchcode,
         per_sigel => \%branch_mappings_per_sigel
     };
+}
+
+sub trim {
+    local $_ = shift;
+
+    s/^\s*(.*?)\s*$/$1/;
+
+    return $_;
 }
 
 sub save_api_conf {
@@ -139,7 +147,7 @@ sub save_api_conf {
 
         $dbh->do("INSERT INTO `$apiconf_table` (`apiconf_name`, `client_id`, `client_secret`) VALUES (?, ?, ?)",
                  {},
-                 $conf->{name}, $conf->{client_id}, $conf->{client_secret});
+                 trim($conf->{name}), trim($conf->{client_id}), trim($conf->{client_secret}));
     }
 
     for my $n (@mappings) {
@@ -158,7 +166,7 @@ sub save_api_conf {
 
         $dbh->do("INSERT INTO `$sigel_table` (`branchcode`, `sigel`, `apiconf_name`) VALUES (?, ?, ?)",
                  {},
-                 $mapping->{branchcode}, $mapping->{sigel}, $mapping->{api_conf}
+                 trim($mapping->{branchcode}), trim($mapping->{sigel}), trim($mapping->{api_conf})
             );
     }
 

@@ -36,7 +36,10 @@ sub process_item {
 
     $plugin->{logger}->debug("record_id_bib: " . $record_id_bib);
 
-    if (scalar(grep { exists $mappings->{$_->{homebranch}} && $mappings->{$_->{homebranch}}->{sigel} eq $sigel } @{$item->biblio->items->unblessed}) <= 1) {
+    if (scalar(grep { exists $mappings->{uc($_->{homebranch})}
+                          && (lc $mappings->{uc($_->{homebranch})}->{sigel}) eq (lc $sigel)
+                          && $_->{itemnumber} != $item->itemnumber
+                    } @{$item->biblio->items->unblessed}) <= 0) {
         my ($holdings, $record_id) = $api->find_holding($sigel, $record_id_bib);
 
         if (defined $holdings) {
@@ -68,13 +71,11 @@ sub delete_items {
             my $biblionumber = $engine->extract_biblionumber( $results->[0] );
             my $items = Koha::Items->search({
                 biblionumber => $biblionumber
-            }, {
-                distinct => 1
             });
             while (my $item = $items->next) {
-                next if !exists $api->mappings->{$item->homebranch};
-                my $m = $api->mappings->{$item->homebranch};
-                if ($m->{sigel} eq $i->{sigel}) {
+                next if !exists $api->mappings->{per_branchcode}->{uc($item->homebranch)};
+                my $m = $api->mappings->{per_branchcode}->{uc($item->homebranch)};
+                if (lc($m->{sigel}) eq lc($i->{sigel})) {
                     $found = 1;
                     last SEARCH;
                 }
@@ -151,7 +152,7 @@ sub all_pending {
 
     my $statustable = $plugin->get_qualified_table_name('status');
 
-    my $sth = C4::Context->dbh->prepare("SELECT id, biblionumber, record_id, holding_id, sigel, status, retries, timestamp FROM `$statustable` WHERE status='pending' OR (status='failed' AND retries < ?) ORDER BY timestamp DESC");
+    my $sth = C4::Context->dbh->prepare("SELECT id, biblionumber, record_id, record_id_bib, holding_id, sigel, status, retries, timestamp FROM `$statustable` WHERE status='pending' OR (status='failed' AND retries < ?) ORDER BY timestamp DESC");
 
     $sth->execute(MAX_RETRIES);
 
@@ -161,10 +162,10 @@ sub all_pending {
 sub _search_expr {
     my $item = shift;
 
-    my @parts = split '/', $_->{record_id};
+    my @parts = split '/', $item->{record_id};
     my $record_id = $parts[$#parts];
 
-    return 'control-number,ext:' . $record_id . ($record_id ne $_->{record_id_bib} ? ' OR control-number,ext:' . $_->{record_id_bib} : '');
+    return 'control-number,ext:' . $record_id . (exists $item->{record_id_bib} && $record_id ne $item->{record_id_bib} ? ' OR control-number,ext:' . $item->{record_id_bib} : '');
 }
 
 sub all_statuses_formatted {
