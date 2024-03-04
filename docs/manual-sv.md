@@ -55,7 +55,7 @@ Förväntning:
 
 Om det inte finns någon beståndspost för den givna sigeln och den aktuella bibliografiska posten läggs inget in i tabellen.  Därför, kontrollera om det finns någon beståndspost med URL:en:
 
-https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/&lt;_libris xl postidentitet_&gt;&library=https://libris.kb.se/library/&lt;_sigel_&gt;
+<pre>https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/&lt;_libris xl postidentitet_&gt;&library=https://libris.kb.se/library/&lt;_sigel_&gt;</pre>
 
 där &lt;_libris xl postidentitet_&gt; och &lt;_sigel_&gt; skall bytas ut.
 
@@ -71,7 +71,7 @@ Förväntning:
 
 Om det inte finns någon beståndspost för den givna sigeln och den aktuella bibliografiska posten läggs inget in i tabellen.  Därför, kontrollera om det finns någon beståndspost med URL:en:
 
-https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/&lt;_libris xl postidentitet_&gt;&library=https://libris.kb.se/library/&lt;_sigel_&gt;
+<pre>https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/<_libris xl postidentitet_>&library=https://libris.kb.se/library/&lt;_sigel_&gt;</pre>
 
 där &lt;_libris xl postidentitet_&gt; och &lt;_sigel_&gt; skall bytas ut.
 
@@ -96,7 +96,7 @@ I kolumen "Bibliografisk post i Koha" skall det finnas en länk till en sökning
 
 Om det inte finns någon beståndspost för den givna sigeln och den aktuella bibliografiska posten läggs inget in i tabellen.  Därför, kontrollera om det finns någon beståndspost med URL:en:
 
-https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/&lt;_libris xl postidentitet_&gt;&library=https://libris.kb.se/library/&lt;_sigel_&gt;
+<pre>https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/<_libris xl postidentitet_>&library=https://libris.kb.se/library/<_sigel_></pre>
 
 där &lt;_libris xl postidentitet_&gt; och &lt;_sigel_&gt; skall bytas ut.
 
@@ -112,7 +112,7 @@ Förväntning:
 
 Om det inte finns någon beståndspost för den givna sigeln och den aktuella bibliografiska posten läggs inget in i tabellen.  Därför, kontrollera om det finns någon beståndspost med URL:en:
 
-https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/&lt;_libris xl postidentitet_&gt;&library=https://libris.kb.se/library/&lt;_sigel_&gt;
+<pre>https://libris-qa.kb.se/\_findhold?id=https://libris-qa.kb.se/&lt;_libris xl postidentitet_&gt;&library=https://libris.kb.se/library/&lt;_sigel_&gt;</pre>
 
 där &lt;_libris xl postidentitet_&gt; och &lt;_sigel_&gt; skall bytas ut.
 
