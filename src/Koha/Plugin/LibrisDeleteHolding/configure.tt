@@ -32,7 +32,7 @@ $stash->set('dump' => sub { return Dumper($_[0]) });
 $stash->set('defined' => sub { return defined $_[0]; });
 [% END %]
 [% BLOCK select %]
-<select type="select-one" name="[% name %]"[% IF defined(id) && id != '' %] id="[% id %]"[% END %][% IF defined(class) %] class="form-control[% IF defined(class) && class != '' %] [% class %][% END %]"[% END %][% IF required %]required[% END %]>
+<select type="select-one" name="[% name %]"[% IF defined(id) && id != '' %] id="[% id %]"[% END %] class="form-control[% IF defined(class) && class != '' %] [% class %][% END %]"[% IF required %]required[% END %]>
   [% IF emptyval %]
   <option value="" [% IF empty(value) %]selected="selected"[% END %]>[% IF defined(emptylabel) %][% emptylabel | html %][% ELSE %][% emptyval | html %][% END %]</option>
   [% END %]
@@ -62,7 +62,7 @@ $stash->set('defined' => sub { return defined $_[0]; });
               <dl class="form-input">
                 <dt><label for="mode">[% MSG.config_mode_label | html %]</label></dt>
                 <dd>
-                  [% PROCESS select list=libris_delete_holding_modes name="libris_delete_holding_mode" id="libris_delete_holding_mode" emptyval="0" valuekey="mode" labelkey="label" value=libris_delete_holding_mode %]
+                  [% PROCESS select list=libris_delete_holding_modes name="libris_delete_holding_mode" id="libris_delete_holding_mode" emptyval="0" valuekey="mode" labelkey="label" value=libris_delete_holding_mode class="libris-delete-holding-mode" %]
                 </dd>
               </dl>
               <h3>[% MSG.libris_credentials %]</h3>
@@ -95,7 +95,7 @@ $stash->set('defined' => sub { return defined $_[0]; });
                 <dl class="form-input">
                   [% SET id0 = "branch-mapping-branchcode-" _ loop.index() %]
                   <dt><label for="[% id0 %]">[% MSG.branchcode_label %]</label></dt>
-                  <dd>[% PROCESS select id=id0 list=branches name=id0 emptyval=0 value=mapping.branchcode valuekey="branchcode" labelkey="branchname" required=1 %]</dd>
+                  <dd>[% PROCESS select id=id0 list=branches name=id0 emptyval=0 value=mapping.branchcode valuekey="branchcode" labelkey="branchname" required=1 class="libris-mapping-branchcode" %]</dd>
                   [% SET id0 = "branch-mapping-sigel-" _ loop.index() %]
                   <dt><label for="[% id0 %]">[% MSG.sigel_label %]</label></dt>
                   <dd><input type="text" name="[% id0 %]" value="[% mapping.sigel | html %]" class="form-control" required /></dd>
@@ -140,7 +140,7 @@ $stash->set('defined' => sub { return defined $_[0]; });
                 [% SET id0 = "branch-mapping-branchcode-" %]
                 <dt><label for="branch-mapping-branchcode-">[% MSG.branchcode_label %]</label></dt>
                 <dd>
-                  <select name="[% id0 %]" class="form-control" required>
+                  <select name="[% id0 %]" class="form-control libris-mapping-branchcode" required>
                        <option value=""></option>
                     [% FOREACH branch IN branches %]
                        <option value="[% branch.branchcode | html %]">[% branch.branchname | html %]</option>

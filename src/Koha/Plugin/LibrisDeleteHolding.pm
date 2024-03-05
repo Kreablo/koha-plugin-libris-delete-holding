@@ -15,7 +15,7 @@ require YAML::XS;
 use strict;
 use warnings;
 
-our $VERSION = "1.2";
+our $VERSION = "1.3";
 
 our $metadata = {
     name            => 'Libris Delete Holding Module',

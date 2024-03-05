@@ -59,19 +59,15 @@
     var credentials_updated = function credentials_updated () {
         var c = credentials();
         $('#branch-mappings-container select.libris-credentials, #branch-mapping-input-template select.libris-credentials').each(function (index, element) {
-            console.log('before ' + $(element).val());
             var current = '';
             if (element.selectedOptions.length === 1) {
                 current = element.selectedOptions[0].value;
             }
-            console.log('current ' + current);
             var options = Array.from(element.getElementsByTagName('option'));
             for (var i = 1; i < options.length; i += 1) {
-                console.log('removing option ' + i + ' options.length: ' + options.length);
                 options[i].remove();
             }
             for (var i = 0; i < c.length; i += 1) {
-                console.log('adding option ' + i + ' options.length: ' + options.length);
                 var opt = document.createElement('option');
                 opt.value = c[i].name;
                 opt.textContent = c[i].name;
@@ -80,7 +76,6 @@
                 }
                 element.append(opt);
             }
-            console.log('after ' + $(element).val());
         });
     };
 
