@@ -15,13 +15,13 @@ require YAML::XS;
 use strict;
 use warnings;
 
-our $VERSION = "1.3";
+our $VERSION = "1.4";
 
 our $metadata = {
     name            => 'Libris Delete Holding Module',
     author          => 'Andreas Jonsson',
     date_authored   => '2023-12-15',
-    date_updated    => "2024-03-05",
+    date_updated    => "2024-08-05",
     minimum_version => 22.11,
     maximum_version => '',
     version         => $VERSION,
@@ -224,6 +224,7 @@ sub configure {
         branch_mappings => all_branch_mappings($self),
         credentials => all_apiconfs($self),
         can_configure => C4::Auth::haspermission(C4::Context->userenv->{'id'}, {'plugins' => 'configure'}),
+        csrf_check => C4::Context->preference("Version") >= 24.05,
         );
 
     $self->output_html( $template->output() );
