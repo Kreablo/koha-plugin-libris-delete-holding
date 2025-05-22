@@ -29,18 +29,27 @@
     var remove_mapping = function remove_mapping (event) {
         event.preventDefault();
         event.stopPropagation();
-        var $e = $(event.currentTarget).parent().parent().remove();
+        var idrem = event.target.getAttribute("data-for");
+        if (idrem) {
+            var $e = $("#" + idrem).remove();
+        }
     };
 
     var remove_credentials = function remove_credentials (event) {
-        remove_mapping(event);
-        credentials_updated();
+        event.preventDefault();
+        event.stopPropagation();
+        var idrem = event.target.getAttribute("data-for");
+        if (idrem) {
+            var $e = $("#" + idrem).remove();
+            credentials_updated();
+        }
     };
 
     var update_id = function update_id ($template, name, idn) {
         $template.find('[name="' + name + '"]').attr('id', name + idn);
         $template.find('label[for="' + name + '"]').attr('for', name + idn);
         $template.find('[name="' + name + '"]').attr('name', name + idn);
+        $template.find('#' + name).attr('id', name + idn);
     };
 
 
@@ -91,7 +100,10 @@
             update_id($template, 'branch-mapping-branchcode-', idn);
             update_id($template, 'branch-mapping-sigel-', idn);
             update_id($template, 'branch-mapping-credentials-', idn);
-            $template.find('button.remove-branch-mapping').click(remove_mapping);
+            update_id($template, 'remove-mapping-', idn);
+            var b = $template.find('button.remove-branch-mapping');
+            b.click(remove_mapping);
+            b.attr({ "data-for": "remove-mapping-" + idn });
             $('#branch-mappings-container').append($template);
         });
 
@@ -104,8 +116,11 @@
             update_id($template, 'credentials-name-', idn);
             update_id($template, 'credentials-client-id-', idn);
             update_id($template, 'credentials-client-secret-', idn);
+            update_id($template, 'remove-creds-', idn);
             $template.find('input').on('blur', credentials_updated);
-            $template.find('button.remove-credentials').click(remove_credentials);
+            var b = $template.find('button.remove-credentials');
+            b.click(remove_credentials);
+            b.attr({ "data-for": "remove-creds-" + idn });
             $('#libris-credentials-container').append($template);
         });
         $('#libris-credentials-container input').on('blur', credentials_updated);

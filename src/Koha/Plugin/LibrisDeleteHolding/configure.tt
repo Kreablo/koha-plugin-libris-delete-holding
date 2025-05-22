@@ -51,8 +51,8 @@ $stash->set('defined' => sub { return defined $_[0]; });
   <div class="row">
     <div class="col-sm-10 col-sm-push-2">
       <main class="page-section">
-        <div class="row">
-          <form method="POST">
+        <form method="POST">
+          <div class="row">
             <div class="col-xs-12 col-sm-6 form-group">
               <h3>[% MSG.misc_config | html %]</h3>
               <input type="hidden" name="class" value="[% CLASS %]">
@@ -69,45 +69,51 @@ $stash->set('defined' => sub { return defined $_[0]; });
               <h3>[% MSG.libris_credentials %]</h3>
               <div id="libris-credentials-container">
                 [% FOREACH c IN credentials %]
-                <hr>
-                <div class="pull-right"><button class="remove-credentials btn-danger"><span class="fa fa-close"></span> [% MSG.remove_libris_credentials | html %]</button></div>
-                <dl class="form-input">
-                  [% SET id0 = "credentials-name-" _ loop.index() %]
-                  <dt><label for="[% id0 %]">[% MSG.libris_credentials_name_label %]</label></dt>
-                  <dd><input id="[% id0 %]" type="text" name="[% id0 %]" value="[% c.apiconf_name | html %]" class="form-control credentials-name" required /></dd>
-                  [% SET id0 = "credentials-client-id-" _ loop.index() %]
-                  <dt><label for="[% id0 %]">[% MSG.client_id_label %]</label></dt>
-                  <dd><input type="text" name="[% id0 %]" value="[% c.client_id | html %]" class="form-control credentials-client-id" required /></dd>
-                  [% SET id0 = "credentials-client-secret-" _ loop.index() %]
-                  <dt><label for="[% id0 %]">[% MSG.client_secret_label %]</label></dt>
-                  <dd><input type="text" name="[% id0 %]" value="[% c.client_secret | html %]" class="form-control credentials-client-secret" required /></dd>
-                </dl>
-                <hr>
+                  [% SET idrem = "remove-creds-" _ loop.index() %]
+                  <div id="[% idrem %]">
+                    <hr>
+                    <div class="pull-right"><button data-for="[% idrem %]" class="remove-credentials btn-danger btn"><span class="fa fa-close"></span> [% MSG.remove_libris_credentials | html %]</button></div>
+                    <dl class="form-input">
+                      [% SET id0 = "credentials-name-" _ loop.index() %]
+                      <dt><label for="[% id0 %]">[% MSG.libris_credentials_name_label %]</label></dt>
+                      <dd><input id="[% id0 %]" type="text" name="[% id0 %]" value="[% c.apiconf_name | html %]" class="form-control credentials-name" required /></dd>
+                      [% SET id0 = "credentials-client-id-" _ loop.index() %]
+                      <dt><label for="[% id0 %]">[% MSG.client_id_label %]</label></dt>
+                      <dd><input type="text" name="[% id0 %]" value="[% c.client_id | html %]" class="form-control credentials-client-id" required /></dd>
+                      [% SET id0 = "credentials-client-secret-" _ loop.index() %]
+                      <dt><label for="[% id0 %]">[% MSG.client_secret_label %]</label></dt>
+                      <dd><input type="text" name="[% id0 %]" value="[% c.client_secret | html %]" class="form-control credentials-client-secret" required /></dd>
+                    </dl>
+                    <hr>
+                  </div>
                 [% END %]
               </div>
-              <button id="add-credentials" class="btn-success btn-lg"><span class="fa fa-plus"></span> [% MSG.add_libris_credentials | html %]</button>
+              <button id="add-credentials" class="btn-success btn-lg btn"><span class="fa fa-plus"></span> [% MSG.add_libris_credentials | html %]</button>
             </div>
             <div  class="col-xs-12 col-sm-6 form-group">
               <div id="branch-mappings-container">
                 <h3>[% MSG.branch_mapping_config | html %]</h3>
                 [% FOREACH mapping IN branch_mappings %]
-                <hr>
-                <div class="pull-right"><button class="remove-branch-mapping btn-danger"><span class="fa fa-close"></span> [% MSG.remove_branch_mapping | html %]</button></div>
-                <dl class="form-input">
-                  [% SET id0 = "branch-mapping-branchcode-" _ loop.index() %]
-                  <dt><label for="[% id0 %]">[% MSG.branchcode_label %]</label></dt>
-                  <dd>[% PROCESS select id=id0 list=branches name=id0 emptyval=0 value=mapping.branchcode valuekey="branchcode" labelkey="branchname" required=1 class="libris-mapping-branchcode" %]</dd>
-                  [% SET id0 = "branch-mapping-sigel-" _ loop.index() %]
-                  <dt><label for="[% id0 %]">[% MSG.sigel_label %]</label></dt>
-                  <dd><input type="text" name="[% id0 %]" value="[% mapping.sigel | html %]" class="form-control" required /></dd>
-                  [% SET id0 = "branch-mapping-credentials-" _ loop.index() %]
-                  <dt><label for="[% id0 %]">[% MSG.branch_mapping_credentials_label %]</label></dt>
-                  <dd>[% PROCESS select id=id0 list=credentials name=id0 emptyval=1 emptylabel=MSG.libris_credentials_null value=mapping.apiconf_name valuekey="apiconf_name" labelkey="apiconf_name" class="libris-credentials" required=1 %]</dd>
-                </dl>
-                <hr>
+                  [% SET idrem= "remove-mapping-" _ loop.index() %]
+                  <div id="[% idrem %]">
+                    <hr>
+                    <div class="pull-right"><button data-for="[% idrem %]" class="remove-branch-mapping btn-danger btn"><span class="fa fa-close"></span> [% MSG.remove_branch_mapping | html %]</button></div>
+                    <dl class="form-input">
+                      [% SET id0 = "branch-mapping-branchcode-" _ loop.index() %]
+                      <dt><label for="[% id0 %]">[% MSG.branchcode_label %]</label></dt>
+                      <dd>[% PROCESS select id=id0 list=branches name=id0 emptyval=0 value=mapping.branchcode valuekey="branchcode" labelkey="branchname" required=1 class="libris-mapping-branchcode" %]</dd>
+                      [% SET id0 = "branch-mapping-sigel-" _ loop.index() %]
+                      <dt><label for="[% id0 %]">[% MSG.sigel_label %]</label></dt>
+                      <dd><input type="text" name="[% id0 %]" value="[% mapping.sigel | html %]" class="form-control" required /></dd>
+                      [% SET id0 = "branch-mapping-credentials-" _ loop.index() %]
+                      <dt><label for="[% id0 %]">[% MSG.branch_mapping_credentials_label %]</label></dt>
+                      <dd>[% PROCESS select id=id0 list=credentials name=id0 emptyval=1 emptylabel=MSG.libris_credentials_null value=mapping.apiconf_name valuekey="apiconf_name" labelkey="apiconf_name" class="libris-credentials" required=1 %]</dd>
+                    </dl>
+                    <hr>
+                 </div>
                [% END %]
               </div>
-              <button id="add-branch-mapping" class="btn-success btn-lg"><span class="fa fa-plus"></span> [% MSG.add_branch_mapping | html %]</button>
+              <button id="add-branch-mapping" class="btn-success btn-lg btn"><span class="fa fa-plus"></span> [% MSG.add_branch_mapping | html %]</button>
             </div>
           </div>
           <div class="row">
@@ -127,38 +133,41 @@ $stash->set('defined' => sub { return defined $_[0]; });
               <p id="save-success" class="text-success">[% MSG.save_success | html %]</p>
               [% END %]
               <hr>
-              <button type="submit" value="save" class="btn-primary save-button btn-lg" ><span class="fa fa-save"></span> [% MSG.save_configuration | html %]</button>
+              <button type="submit" value="save" class="btn-primary save-button btn-lg btn" ><span class="fa fa-save"></span> [% MSG.save_configuration | html %]</button>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
 
         <div style="display: none">
           <form>
             <div id="branch-mapping-input-template" class="form-group">
-              <hr>
-              <div class="pull-right"><button class="remove-branch-mapping btn-danger"><span class="fa fa-close"></span> [% MSG.remove_branch_mapping | html %]</button></div>
-              <dl class="form-input">
-                [% SET id0 = "branch-mapping-branchcode-" %]
-                <dt><label for="branch-mapping-branchcode-">[% MSG.branchcode_label %]</label></dt>
-                <dd>
-                  <select name="[% id0 %]" class="form-control libris-mapping-branchcode" required>
-                       <option value=""></option>
-                    [% FOREACH branch IN branches %]
-                       <option value="[% branch.branchcode | html %]">[% branch.branchname | html %]</option>
-                    [% END %]
-                  </select>
-                [% SET id0 = "branch-mapping-sigel-" %]
-                <dt><label for="[% id0 %]">[% MSG.sigel_label %]</label></dt>
-                <dd><input type="text" name="[% id0 %]" value="" class="form-control" required /></dd>
-                [% SET id0 = "branch-mapping-credentials-" %]
-                <dt><label for="[% id0 %]">[% MSG.branch_mapping_credentials_label %]</label></dt>
-                <dd>[% PROCESS select id=id0 list=credentials name=id0 emptyval=1 emptylabel=MSG.libris_credentials_null value="" valuekey="apiconf_name" labelkey="apiconf_name" class="libris-credentials" required=1 %]</dd>
-              </dl>
-              <hr>
+              <div id="remove-mapping-">
+                <hr>
+                <div class="pull-right"><button class="remove-branch-mapping btn-danger btn"><span class="fa fa-close"></span> [% MSG.remove_branch_mapping | html %]</button></div>
+                <dl class="form-input">
+                  [% SET id0 = "branch-mapping-branchcode-" %]
+                  <dt><label for="branch-mapping-branchcode-">[% MSG.branchcode_label %]</label></dt>
+                  <dd>
+                    <select name="[% id0 %]" class="form-control libris-mapping-branchcode" required>
+                         <option value=""></option>
+                      [% FOREACH branch IN branches %]
+                         <option value="[% branch.branchcode | html %]">[% branch.branchname | html %]</option>
+                      [% END %]
+                    </select>
+                  [% SET id0 = "branch-mapping-sigel-" %]
+                  <dt><label for="[% id0 %]">[% MSG.sigel_label %]</label></dt>
+                  <dd><input type="text" name="[% id0 %]" value="" class="form-control" required /></dd>
+                  [% SET id0 = "branch-mapping-credentials-" %]
+                  <dt><label for="[% id0 %]">[% MSG.branch_mapping_credentials_label %]</label></dt>
+                  <dd>[% PROCESS select id=id0 list=credentials name=id0 emptyval=1 emptylabel=MSG.libris_credentials_null value="" valuekey="apiconf_name" labelkey="apiconf_name" class="libris-credentials" required=1 %]</dd>
+                </dl>
+                <hr>
+              </div>
             </div>
             <div id="credentials-input-template" class="form-group">
+              <div id="remove-creds-">
                 <hr>
-                <div class="pull-right"><button class="remove-credentials btn-danger"><span class="fa fa-close"></span> [% MSG.remove_libris_credentials | html %]</button></div>
+                <div class="pull-right"><button class="remove-credentials btn-danger btn"><span class="fa fa-close"></span> [% MSG.remove_libris_credentials | html %]</button></div>
                 <dl class="form-input">
                   [% SET id0 = "credentials-name-" %]
                   <dt><label for="[% id0 %]">[% MSG.libris_credentials_name_label %]</label></dt>
@@ -171,6 +180,7 @@ $stash->set('defined' => sub { return defined $_[0]; });
                   <dd><input type="text" name="[% id0 %]" value="" class="form-control credentials-client-secret" required /></dd>
                 </dl>
                 <hr>
+              </div>
             </div>
           </form>
         </div>
