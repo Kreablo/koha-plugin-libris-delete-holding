@@ -52,7 +52,6 @@
         $template.find('#' + name).attr('id', name + idn);
     };
 
-
     var credentials = function credentials () {
         var a = [];
         $('#libris-credentials-container dl.form-input').each(function (index, element) {

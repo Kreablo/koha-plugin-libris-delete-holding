@@ -17,7 +17,7 @@ sub process_item {
     my $plugin = shift;
     my $item = shift;
 
-    my $homebranch = $item->homebranch;
+    my $homebranch = uc($item->homebranch);
     my $api = get_api($plugin);
     my $mappings = $api->mappings->{per_branchcode};
 
