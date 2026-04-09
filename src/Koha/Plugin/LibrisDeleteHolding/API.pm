@@ -114,7 +114,12 @@ sub _get_bearer {
     if ($response->code eq '200') {
         my $content = $response->content;
         my $json = new JSON;
-        return $json->decode($content);
+        my $result;
+        eval { $result = $json->decode($content); };
+        if ($@) {
+            $self->{logger}->error('Failed to parse json: $@');
+        }
+        return $result;
     }
 
     $self->{logger}->error('Failed to get bearer token, server replied ' . $response->code);
@@ -184,7 +189,12 @@ sub _get_record {
     if ($response->code eq '200') {
         my $content = $response->content;
         my $json = new JSON;
-        my $record = $json->decode($content);
+        my $record;
+        eval { $record = $json->decode($content); };
+        if ($@) {
+            $self->{logger}->debug('Failed to parse record: $@');
+            return undef;
+        }
         if ($record->{'@type'} eq 'Record') {
             return $record;
         }
@@ -211,7 +221,13 @@ sub find_holding {
     if ($response->code eq '200') {
         my $content = $response->content;
         my $json = new JSON;
-        my $holdings = $json->decode($content);
+        my $holdings;
+        eval { $holdings = $json->decode($content); };
+
+        if ($@) {
+            $self->{logger}->debug("Failed to parse json: $@");
+            return undef;
+        }
 
         if (scalar(@{$holdings}) == 0) {
             return undef;
