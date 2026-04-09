@@ -84,9 +84,6 @@ sub save_api_conf {
     my $apiconf_table = $plugin->get_qualified_table_name('apiconfig');
     my $sigel_table = $plugin->get_qualified_table_name('sigel');
 
-    $dbh->do("DELETE FROM `$sigel_table`;");
-    $dbh->do("DELETE FROM `$apiconf_table`;");
-
     my %confs = ();
     my %mappings = ();
 
@@ -132,6 +129,9 @@ sub save_api_conf {
     @mappings = sort { $a <=> $b } @mappings;
 
 
+    my $first_conf = 1;
+    my @confs_to_keep = ();
+    my $delete_confs = "DELETE FROM `$apiconf_table` WHERE `apiconf_name` NOT IN (";
     for my $n (@confs) {
         my $conf = $confs{$n};
         my $n = exists $conf->{name};
@@ -145,11 +145,28 @@ sub save_api_conf {
                 . (!$s ? " 'client_secret' is missing" : "");
         }
 
-        $dbh->do("INSERT INTO `$apiconf_table` (`apiconf_name`, `client_id`, `client_secret`) VALUES (?, ?, ?)",
+        if ($first_conf) {
+            $delete_confs .= '?';
+            $first_conf = 0;
+        } else {
+            $delete_confs .= ', ?';
+        }
+        push @confs_to_keep, trim($conf->{name});
+
+        $dbh->do("INSERT INTO `$apiconf_table` (`apiconf_name`, `client_id`, `client_secret`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `client_id`=?, `client_secret`=?",
                  {},
-                 trim($conf->{name}), trim($conf->{client_id}), trim($conf->{client_secret}));
+                 trim($conf->{name}), trim($conf->{client_id}), trim($conf->{client_secret}), trim($conf->{client_id}), trim($conf->{client_secret}));
+    }
+    $delete_confs .= ')';
+    if (@confs_to_keep) {
+        $dbh->do($delete_confs, {}, @confs_to_keep);
+    } else {
+        $dbh->do("DELETE FROM `$apiconf_table`");
     }
 
+    my $delete_mappings = "DELETE FROM `$sigel_table` WHERE `branchcode` NOT IN (";
+    my $first_mapping = 1;
+    my @mappings_to_keep = ();
     for my $n (@mappings) {
         my $mapping = $mappings{$n};
 
@@ -164,10 +181,25 @@ sub save_api_conf {
                 . (!$c ? "'api_conf' is missing" : "");
         }
 
-        $dbh->do("INSERT INTO `$sigel_table` (`branchcode`, `sigel`, `apiconf_name`) VALUES (?, ?, ?)",
+        if ($first_mapping) {
+            $delete_mappings .= '?';
+            $first_mapping = 0;
+        } else {
+            $delete_mappings .= ', ?';
+        }
+        push @mappings_to_keep, trim($mapping->{branchcode});
+
+        $dbh->do("INSERT INTO `$sigel_table` (`branchcode`, `sigel`, `apiconf_name`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `sigel`=?, `apiconf_name`=?",
                  {},
-                 trim($mapping->{branchcode}), trim($mapping->{sigel}), trim($mapping->{api_conf})
+                 trim($mapping->{branchcode}), trim($mapping->{sigel}), trim($mapping->{api_conf}), trim($mapping->{sigel}), trim($mapping->{api_conf})
             );
+    }
+    $delete_mappings .= ')';
+
+    if (@mappings_to_keep) {
+        $dbh->do($delete_mappings, {}, @mappings_to_keep);
+    } else {
+        $dbh->do("DELETE FROM `$sigel_table`");
     }
 
 }
